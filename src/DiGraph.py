@@ -95,6 +95,8 @@ class DiGraph(GraphInterface):
 
 def main():
     g = DiGraph()
+    
+    print(g)
 
 
 

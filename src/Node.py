@@ -32,6 +32,8 @@ class Node:
             return False
 
     def __eq__(self, o: object) -> bool:
+        if type(o) is not Node:
+            return False
         if(self.key == o.key):
             for key in self.neighbors_weights:
                 if(o.neighbors_weights.get(key) != self.neighbors_weights[key]):
@@ -58,7 +60,8 @@ class Node:
         self.neighbors.clear()
         self.neighbors_weights.clear()
         
-
+    def __hash__(self):
+        return self.key
     def __str__(self) -> str:
         return f"[Node {self.key}]"
     def __repr__(self) -> str:
