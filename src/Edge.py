@@ -20,6 +20,8 @@ class Edge:
     def __repr__(self) -> str:
         return self.__str__()
     def __eq__(self, o: object) -> bool:
+        if o == None: 
+            return False
         return o.src == self.src and o.dest == self.dest and o.getweight()==self.__weight
     
       

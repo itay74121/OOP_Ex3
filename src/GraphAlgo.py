@@ -116,13 +116,54 @@ class GraphAlgo(GraphAlgoInterface):
                 ret = self.scc_list[i]
                 break
         return ret
-    # cannot overload method without a dispatch
-    # def connected_component(self) -> List[list]:
-    #     self.SCC()
-    #     l = []
-    #     for i in self.scc_list:
-    #         l.append(self.scc_list[i])
-    #     return l
+
+    def connected_components(self) -> List[list]:
+        self.SCC()
+        l = []
+        for i in self.scc_list:
+            l.append(self.scc_list[i])
+        return l
+    def shortest_path(self, id1: int, id2: int) -> (float, list):
+        if not self.graph:
+            return None
+        if self.graph.contains(id1,id2):
+            src = self.graph.nodes.get(id1)
+            dest = self.graph.nodes.get(id2)
+            parent = {} # parent dictionary 
+            stack = [src] # init the stack with the src
+            for key in self.graph.nodes: # iterate over nodes and set weights to -1
+                self.graph.nodes[key].weight = -1
+            src.weight = 0 # set src weight to 0
+            while(len(stack)!=0): # as long as the stack isn't empty 
+                node = stack.pop() # pop a node out of the stack 
+                for ni_key in node.neighbors_weights: # iterate over the edges that go out of the node
+                    if node.neighbors[ni_key].weight == -1: #means we never reached it
+                        node.neighbors[ni_key].weight = node.neighbors_weights[ni_key].getweight()+node.weight
+                        stack.append(node.neighbors[ni_key])
+                        stack.sort(key=lambda x: x.weight,reverse=True)
+                        parent[ node.neighbors[ni_key]] = node
+                    elif node.neighbors[ni_key].weight > node.neighbors_weights[ni_key].getweight()+node.weight:   
+                        node.neighbors[ni_key].weight = node.neighbors_weights[ni_key].getweight()+node.weight
+                        stack.sort(key=lambda x: x.weight,reverse=True)
+                        parent[ node.neighbors[ni_key]] = node
+            # once finished the algorithm 
+            # should check if we reached the dest 
+            # check if dest is in parent dict
+            if parent.get(dest) == None: # means we never reached it 
+                #thus return None
+                return None
+            else: # means we reached it so we should trace the path back 
+                n = dest
+                l = []
+                while(parent[n]!=src):
+                    l.append(n)
+                    n = parent[n]
+                l.append(n)
+                l.append(parent[n])
+                l.reverse()
+                return (dest.weight,l)
+
+
 
 def main():
     g = DiGraph()
@@ -142,7 +183,8 @@ def main():
     ga = GraphAlgo(g)
     #ga.load_from_json("./data/A1")
     print(ga.connected_component(6))
-
+    print(ga.connected_components())
+    print(ga.shortest_path(1,6))
 
 
 

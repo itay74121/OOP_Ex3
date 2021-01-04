@@ -25,8 +25,8 @@ class DiGraph(GraphInterface):
     def all_in_edges_of_node(self, id1: int) -> dict:
         d = {}
         for node in self.nodes:
-            if(node.has_edge_to(id1)):
-                d[node.key] = node.get_weight_to(id1)
+            if(self.nodes[node].has_edge_to(id1)):
+                d[self.nodes[node].key] = self.nodes[node].get_weight_to(id1)
         return d
 
     def all_out_edges_of_node(self, id1: int) -> dict:
@@ -51,10 +51,13 @@ class DiGraph(GraphInterface):
             return True
         else:
             return False
-    def add_node(self, node_id: int, pos: tuple) -> bool:
+    def add_node(self, node_id: int, pos: tuple=None) -> bool:
         keys = [i for i in self.nodes]
         if(node_id not in keys):
-            n = Node(node_id,Position(pos[0],pos[1],pos[2]))
+            if(pos):
+                n = Node(node_id,Position(pos[0],pos[1],pos[2]))
+            else:
+                n = Node(node_id)
             self.nodes[node_id] = n
             return True
         else:
@@ -91,6 +94,19 @@ class DiGraph(GraphInterface):
                 s += str(self.nodes[key].neighbors[nkey])+" "
             s+="\n"
         return s
+    """
+    *args is a tuple of nodes objects or integer keys. 
+    """
+    def contains(self,*args) -> bool:
+        t = True
+        for arg in args:
+            if isinstance(arg,int):
+                t = t and self.nodes.get(arg)!=None
+            elif isinstance(arg,Node):
+                t = t and self.nodes.get(arg.key)!=None
+            else:
+                t = False
+        return t
 
 
 def main():

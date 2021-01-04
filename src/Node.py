@@ -2,7 +2,7 @@ from Position import Position
 from Edge import Edge
 
 class Node:
-    def __init__(self,key:int,pos:Position):
+    def __init__(self,key:int,pos:Position=None):
         self.key = key
         self.neighbors = {} # key to neighbor
         self.neighbors_weights = {} # key to edge to that nieghbor
@@ -45,7 +45,10 @@ class Node:
         else:
             return False
     def has_edge_to(self,key:int):
-        return self.neighbors_weights.get(key)!=None
+        if key:
+            return self.neighbors_weights.get(key)!=None
+        else:
+            return False
     def get_weight_to(self,key:int):
         if(self.has_edge_to(key)):
             return self.neighbors_weights[key].getweight()
